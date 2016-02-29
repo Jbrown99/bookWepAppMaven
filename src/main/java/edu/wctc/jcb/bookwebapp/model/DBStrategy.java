@@ -31,7 +31,8 @@ public interface DBStrategy {
             String pkColName, Object value) throws SQLException;  
       
      public abstract int insertRecord(String tableName, List<Object> colValues, List<String>colNames)throws SQLException; 
-        
+     
+     public Map<String,Object> findRecordById(String tableName,Object pkColName, Object value)throws SQLException;
     
     
 }

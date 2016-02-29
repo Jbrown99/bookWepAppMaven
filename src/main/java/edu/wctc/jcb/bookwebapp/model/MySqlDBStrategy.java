@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package edu.wctc.jcb.bookwebapp.model;
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -17,13 +18,20 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.Dependent;
+
 /**
  *
  * @author joshuabrown
  */
-public class MySqlDBStrategy implements DBStrategy {
+@Dependent
+public class MySqlDBStrategy implements DBStrategy, Serializable {
     
     private Connection conn;
+    
+    public MySqlDBStrategy(){
+        
+    }
     
     @Override
     public void openConnection(String driverClass, String url, 
@@ -124,6 +132,50 @@ public class MySqlDBStrategy implements DBStrategy {
         
     }
     
+    @Override
+    public Map<String,Object> findRecordById(String tableName,Object pkColName, Object value)throws SQLException{
+        //select * from author where author_id = 1
+        String sql = "SELECT * FROM " + tableName + " where " + pkColName + " = ?";
+        
+        PreparedStatement psmt = null;
+        Map<String,Object>record = new HashMap();
+        
+        try{
+            psmt=conn.prepareStatement(sql);
+            psmt.setObject(1,value);
+            ResultSet rs = psmt.executeQuery();
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnCount = rsmd.getColumnCount();
+            
+            while(rs.next()){
+                
+                 for(int colNo =1; colNo <= columnCount; colNo++){
+                     record.put(rsmd.getColumnName(colNo), rs.getObject(colNo));
+                 }
+                
+            }
+            
+        } catch (SQLException sqle) {
+            throw sqle;
+        } catch (Exception e) {
+            throw new SQLException(e.getMessage());
+        } finally {
+                    try {
+                            psmt.close();
+                            conn.close();
+                            
+                    } catch(SQLException e) {
+                            throw e;
+                    } // end try
+        } // end finally
+            
+            return record;
+            
+            
+        }
+        
+    
+    
     public int deleteById(String tableName,String pkColName, Object value)throws SQLException{
         
         
@@ -149,10 +201,10 @@ public class MySqlDBStrategy implements DBStrategy {
         
         try{
             
-            psmt = buildInsertStatement(conn,tableName, colValues);
+            psmt = buildInsertStatement(conn,tableName, colNames);
         
             
-                        final Iterator i =colNames.iterator();
+                        final Iterator i =colValues.iterator();
                         int index = 1;
                         while (i.hasNext()){
                             final Object obj = i.next();
@@ -224,7 +276,7 @@ public class MySqlDBStrategy implements DBStrategy {
         }
     
     
-    
+
     
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
          DBStrategy db = new MySqlDBStrategy();
@@ -238,6 +290,10 @@ public class MySqlDBStrategy implements DBStrategy {
 //       List<Map<String,Object>> rawData =
 //                db.findAllRecords("author",0);
 //                 System.out.println(rawData);
+
+
+//            List<Object> rawData = db.findRecordById("author","author_id",1);
+//            System.out.println(rawData);
 //                 
 //          db.closeConnection();
          

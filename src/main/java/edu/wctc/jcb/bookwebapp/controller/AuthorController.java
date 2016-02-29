@@ -12,12 +12,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 
 /**
@@ -35,28 +37,63 @@ public class AuthorController extends HttpServlet {
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
+     *
      */
+    private String driverClass;
+    private String url;
+    private String userName;
+    private String pwd;
+    
+    @Inject
+    private AuthorService authService;
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try  {
+        //use init parameters to config database connection
+        configDbConnection();
         
-            AuthorService authorService = new AuthorService();
-            List<Author> authorList = authorService.getAuthorList();
+        String destination="/authorTablePage";
+        String action = request.getParameter("action");
+        String specificAction= request.getParameter("submit");
+        try  {
             
-            request.setAttribute("authorList", authorList);
-            
-            
-           
+            if(action.equals("add") ){
+                
+                destination= "/AddAuthor.jsp";
+            }
+            if(action.equals("save")){
+                String authorName= request.getParameter("authorName");
+                authService.insertIntoAuthorList(authorName);
+                destination="/AddAuthor.jsp";
+            }
+            if(action.equals("add/delete")){
+               
+                if(specificAction.equals("update")){
+                destination="/UpdateAuthor.jsp";
+            }else{
+                  String[] authorIds = request.getParameterValues("authorId");
+                        for (String id : authorIds) {
+                            authService.deleteAuthorById(id);  
+                         }       
+                }            
+            }            
+                        
             
         } catch(Exception e){
             request.setAttribute("errorMsg", e.getMessage());
         }
           RequestDispatcher view =
-                    request.getRequestDispatcher("/AuthorTablePage.jsp");
+                    request.getRequestDispatcher(destination);
             view.forward(request,response);  
             
         }
+    
+    
+    
+    private void configDbConnection(){
+        authService.getDao().initDao(driverClass, url, userName, pwd);
+    }
     
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -98,4 +135,12 @@ public class AuthorController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+    @Override
+    public void init() throws ServletException{
+        driverClass = getServletContext().getInitParameter("db.driver.class");
+        url = getServletContext().getInitParameter("db.url");
+        userName = getServletContext().getInitParameter("db.username");
+        pwd = getServletContext().getInitParameter("db.password");
+    }
+    
 }

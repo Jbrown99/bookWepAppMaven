@@ -5,16 +5,27 @@
  */
 package edu.wctc.jcb.bookwebapp.model;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.List;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 
 /**
  *
  * @author joshuabrown
  */
-public class AuthorService {
+@SessionScoped
+public class AuthorService implements Serializable {
     
-    private AuthorDaoStrategy dao = new AuthorDao();
+    @Inject
+    private AuthorDaoStrategy dao;
+    
+    public AuthorService(){
+        
+    }
+    
+    
     
     public List<Author> getAuthorList() throws ClassNotFoundException, SQLException {
         return dao.getAuthorList();
@@ -28,9 +39,21 @@ public class AuthorService {
         return dao.updateAuthorById(id,colNames,colValues);
     }
     
-    public int insertIntoAuthorList(List<Object> values) throws ClassNotFoundException,SQLException{
-        return dao.insertIntoAuthorList(values);
+    public int insertIntoAuthorList(String value) throws ClassNotFoundException,SQLException{
+        return dao.insertIntoAuthorList(value);
     }
+    
+    
+
+    public AuthorDaoStrategy getDao() {
+        return dao;
+    }
+
+    public void setDao(AuthorDaoStrategy dao) {
+        this.dao = dao;
+    }
+    
+    
     
     
     public static void main(String[] args) throws ClassNotFoundException,SQLException {
