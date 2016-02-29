@@ -28,6 +28,14 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "AuthorController", urlPatterns = {"/AuthorController"})
 public class AuthorController extends HttpServlet {
+    private static final String AUTHOR_LIST="/AuthorTablePage.jsp";
+    private static final String ADD_AUTHOR="/AddAuthor.jsp";
+    private static final String UPDATE_AUTHOR="/UpdateAuthor.jsp";
+    private static final String ADD = "add";
+    private static final String LIST="list";
+    private static final String SAVE ="save";
+    private static final String ADD_DELETE ="add/delete";
+    private static final String UPDATE = "update";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -53,31 +61,36 @@ public class AuthorController extends HttpServlet {
         //use init parameters to config database connection
         configDbConnection();
         
-        String destination="/authorTablePage";
+        String destination="/AuthorTablePage.jsp";
         String action = request.getParameter("action");
         String specificAction= request.getParameter("submit");
         try  {
-            
-            if(action.equals("add") ){
-                
-                destination= "/AddAuthor.jsp";
-            }
-            if(action.equals("save")){
-                String authorName= request.getParameter("authorName");
-                authService.insertIntoAuthorList(authorName);
-                destination="/AddAuthor.jsp";
-            }
-            if(action.equals("add/delete")){
-               
-                if(specificAction.equals("update")){
-                destination="/UpdateAuthor.jsp";
-            }else{
-                  String[] authorIds = request.getParameterValues("authorId");
+            switch (action) {
+                case LIST:
+                     List<Author> authors = authService.getAuthorList();
+                     request.setAttribute("authors", authors);
+                     destination= AUTHOR_LIST;
+                     break;
+                case ADD:
+                    destination= ADD_AUTHOR;
+                    break;
+                case SAVE:
+                    String authorName= request.getParameter("authorName");
+                    authService.insertIntoAuthorList(authorName);
+                    destination= ADD_AUTHOR;
+                    break;
+                case ADD_DELETE:
+                    if(specificAction.equals(UPDATE)){
+                        destination=UPDATE_AUTHOR;
+                    }else{
+                        String[] authorIds = request.getParameterValues("authorId");
                         for (String id : authorIds) {
-                            authService.deleteAuthorById(id);  
-                         }       
-                }            
-            }            
+                            authService.deleteAuthorById(id);
+                        }
+                    }   break;
+                default:            
+                    break;
+            }
                         
             
         } catch(Exception e){

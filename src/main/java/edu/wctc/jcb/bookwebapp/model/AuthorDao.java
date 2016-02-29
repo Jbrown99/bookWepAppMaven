@@ -61,6 +61,7 @@ public class AuthorDao implements AuthorDaoStrategy,  Serializable {
         return authors;
     }
     
+    @Override
     public Author findAuthorById(Object id) throws ClassNotFoundException,SQLException{
         db.openConnection(driver, url, user, pwd);
         
@@ -100,6 +101,7 @@ public class AuthorDao implements AuthorDaoStrategy,  Serializable {
         
     }
     
+    @Override
     public int updateAuthorById(String id, List<String> colNames, List<Object> colValues) throws ClassNotFoundException, SQLException{
         db.openConnection(driver, url, user, pwd);
       int result = db.updateRecordById(id,colNames, colValues,"author_id",7);
@@ -163,15 +165,11 @@ public class AuthorDao implements AuthorDaoStrategy,  Serializable {
 //        
 //    }
 
-    @Override
-    public int updateAuthorById(Object id, List<String> colNames, List<Object> colValues) throws ClassNotFoundException, SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    
 
-    @Override
-    public List<Author> findAuthorById() throws ClassNotFoundException, SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+   
+
+   
 
    
    

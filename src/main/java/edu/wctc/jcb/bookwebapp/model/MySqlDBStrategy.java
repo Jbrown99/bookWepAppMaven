@@ -261,18 +261,21 @@ public class MySqlDBStrategy implements DBStrategy, Serializable {
 		return conn_loc.prepareStatement(finalSQL);
 	}
         
-        private PreparedStatement buildInsertStatement(Connection conn_loc,String tableName, List colValues)throws SQLException{
-            StringBuffer sql = new StringBuffer("INSERT INTO ");
-            (sql.append(tableName)).append(" Values ( ");
-            final Iterator i =colValues.iterator();
-            while( i.hasNext() ){
-                (sql.append( (String)i.next() )).append(" ?, ");
-            }
-            sql = new StringBuffer( (sql.toString()).substring( 0,(sql.toString()).lastIndexOf(", ")));
-            sql.append(" );");
-            final String finalSQL = sql.toString();
-            return conn_loc.prepareStatement(finalSQL);
-            
+        private PreparedStatement buildInsertStatement(Connection conn_loc,String tableName, List colName)throws SQLException{
+         
+                StringBuffer sql = new StringBuffer("INSERT INTO ");
+        (sql.append(tableName)).append(" (");
+        final Iterator i = colName.iterator();
+        while (i.hasNext()) {
+            (sql.append((String) i.next())).append(", ");
+        }
+        sql = new StringBuffer((sql.toString()).substring(0, (sql.toString()).lastIndexOf(", ")) + ") VALUES (");
+        for (int j = 0; j < colName.size(); j++) {
+            sql.append("?, ");
+        }
+        final String finalSQL = (sql.toString()).substring(0, (sql.toString()).lastIndexOf(", ")) + ")";
+        //System.out.println(finalSQL);
+        return conn_loc.prepareStatement(finalSQL); 
         }
     
     

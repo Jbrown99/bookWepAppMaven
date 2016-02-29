@@ -35,7 +35,7 @@ public class AuthorService implements Serializable {
         return dao.deleteAuthorById(id);
     }
     
-    public int updateAuthorById(Object id,List<String> colNames,List<Object> colValues) throws ClassNotFoundException,SQLException{
+    public int updateAuthorById(String id,List<String> colNames,List<Object> colValues) throws ClassNotFoundException,SQLException{
         return dao.updateAuthorById(id,colNames,colValues);
     }
     
