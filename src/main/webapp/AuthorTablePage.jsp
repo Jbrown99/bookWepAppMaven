@@ -28,7 +28,7 @@
         <form method="POST" action="AuthorController?action=addEditDelete">   
                 
                 <table  class="table table-hover">
-            
+            <th>Edit/Delete</th>
             <th>Author Name</th>
             <th>Date Added</th>
                 <c:forEach items="${authors}" var="author">
