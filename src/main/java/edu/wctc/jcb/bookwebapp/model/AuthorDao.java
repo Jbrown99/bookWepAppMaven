@@ -57,7 +57,7 @@ public class AuthorDao implements AuthorDaoStrategy,  Serializable {
             
         }
         
-        db.closeConnection();
+        //db.closeConnection();
         return authors;
     }
     
@@ -67,14 +67,12 @@ public class AuthorDao implements AuthorDaoStrategy,  Serializable {
         
         Map<String,Object> result = db.findRecordById("author","author_id",id);
         Author author = new Author();
-        
         author.setAuthorId((Integer)result.get("author_id"));
         author.setAuthorName(result.get("author_name").toString());
         author.setDateAdded((Date)result.get("date_added"));
         
         
-        db.closeConnection();
-        
+        //db.closeConnection();
         return author;
         
     } 
@@ -84,28 +82,29 @@ public class AuthorDao implements AuthorDaoStrategy,  Serializable {
         db.openConnection(driver,url,user,pwd);
         
         int result = db.deleteById("author", "author_id", id);
-        db.closeConnection();
+       // db.closeConnection();
         return result;
     }
     
     @Override
     public int insertIntoAuthorList(String authorName) throws ClassNotFoundException, SQLException{
         db.openConnection(driver,url,user,pwd);
+       
+        int result = db.insertRecord("Author",Arrays.asList(authorName,new Date()),Arrays.asList("author_name","date_added"));
         
-         List<String> colNames = Arrays.asList("author_name","date_added");
-         List<Object> values = Arrays.asList(authorName,new Date());
-        int result = db.insertRecord("Author", values,colNames);
-        db.closeConnection();
         return result;
+       
         
         
     }
     
     @Override
-    public int updateAuthorById(String id, List<String> colNames, List<Object> colValues) throws ClassNotFoundException, SQLException{
+    public int updateAuthorById(String id, String authorName) throws ClassNotFoundException, SQLException{
         db.openConnection(driver, url, user, pwd);
-      int result = db.updateRecordById(id,colNames, colValues,"author_id",7);
-      db.closeConnection();
+      int result = db.updateRecordById("author", Arrays.asList("author_name"), 
+                                       Arrays.asList(authorName),
+                                       "author_id", id);;
+      //db.closeConnection();
       return result;
     
     }

@@ -16,7 +16,7 @@ public interface AuthorDaoStrategy {
 
     List<Author> getAuthorList() throws ClassNotFoundException, SQLException;
     public int deleteAuthorById(Object id) throws ClassNotFoundException, SQLException;
-    public int updateAuthorById(String id, List<String> colNames, List<Object> colValues) throws ClassNotFoundException, SQLException;
+    public int updateAuthorById(String id,String authorName) throws ClassNotFoundException, SQLException;
     public int insertIntoAuthorList(String value) throws ClassNotFoundException,SQLException;
     public Author findAuthorById(Object id)throws ClassNotFoundException,SQLException;
     

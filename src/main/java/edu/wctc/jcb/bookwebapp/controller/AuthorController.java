@@ -31,11 +31,16 @@ public class AuthorController extends HttpServlet {
     private static final String AUTHOR_LIST="/AuthorTablePage.jsp";
     private static final String ADD_AUTHOR="/AddAuthor.jsp";
     private static final String UPDATE_AUTHOR="/UpdateAuthor.jsp";
-    private static final String ADD = "add";
+    private static final String EDIT_DELETE = "addEditDelete";
+    private static final String ADD = "Add";
     private static final String LIST="list";
     private static final String SAVE ="save";
-    private static final String ADD_DELETE ="add/delete";
-    private static final String UPDATE = "update";
+    private static final String SAVE_EDIT="Save";
+    private static final String DELETE ="Delete";
+    private static final String SUBMIT = "submit";
+    private static final String EDIT = "Edit";
+    private static final String ACTION_PARAM="action";
+   
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -61,9 +66,9 @@ public class AuthorController extends HttpServlet {
         //use init parameters to config database connection
         configDbConnection();
         
-        String destination="/AuthorTablePage.jsp";
-        String action = request.getParameter("action");
-        String specificAction= request.getParameter("submit");
+        String destination="";
+        String action = request.getParameter(ACTION_PARAM);
+        
         try  {
             switch (action) {
                 case LIST:
@@ -71,26 +76,51 @@ public class AuthorController extends HttpServlet {
                      request.setAttribute("authors", authors);
                      destination= AUTHOR_LIST;
                      break;
-                case ADD:
-                    destination= ADD_AUTHOR;
-                    break;
-                case SAVE:
-                    String authorName= request.getParameter("authorName");
-                    authService.insertIntoAuthorList(authorName);
-                    destination= ADD_AUTHOR;
-                    break;
-                case ADD_DELETE:
-                    if(specificAction.equals(UPDATE)){
-                        destination=UPDATE_AUTHOR;
-                    }else{
+                case EDIT_DELETE:
+                    String specificAction= request.getParameter(SUBMIT);
+                    
+                    
+                    if(specificAction.equals(EDIT)){
+                            String authorId=request.getParameter("authorId");
+                            Author author = authService.findAuthorById(authorId);
+                            request.setAttribute("author", author);
+                            destination= UPDATE_AUTHOR;
+                    }
+                    if(specificAction.equals(DELETE)){
                         String[] authorIds = request.getParameterValues("authorId");
                         for (String id : authorIds) {
                             authService.deleteAuthorById(id);
                         }
-                    }   break;
+                        this.refreshList(request, authService);
+                        destination= AUTHOR_LIST;
+                    }
+                    if(specificAction.equals(ADD)){
+                        
+                        destination= ADD_AUTHOR;
+                        
+                    } 
+                    if(specificAction.equals(SAVE)){
+                        
+                    String authorName = request.getParameter("authorName");
+                    authService.insertIntoAuthorList(authorName);
+                    this.refreshList(request, authService);
+                    destination= AUTHOR_LIST;  
+                    }
+                    break;
+                
+                case SAVE_EDIT:
+                    String authorName = request.getParameter("authorName");
+                    String authorId = request.getParameter("authorId");
+                    authService.updateAuthorById(authorId, authorName);
+                    this.refreshList(request, authService);
+                    destination= AUTHOR_LIST;
+                    break;
+                    
                 default:            
                     break;
+                    
             }
+                    
                         
             
         } catch(Exception e){
@@ -102,7 +132,10 @@ public class AuthorController extends HttpServlet {
             
         }
     
-    
+     private void refreshList(HttpServletRequest request, AuthorService authService) throws Exception {
+        List<Author> authors = authService.getAuthorList();
+        request.setAttribute("authors", authors);
+    }
     
     private void configDbConnection(){
         authService.getDao().initDao(driverClass, url, userName, pwd);

@@ -21,9 +21,9 @@
             <Table>
                 
                 <tr>
-                    <input type="text" value="${author.authorId}" name="authorId"/>
-                    <input type="text" value="${author.authorName}" name="AuthorName"/>
-                    <input type="text" value="${author.dateAdded}" name="dateAdded"/>
+                    <input type="text" value="${author.authorId}" name="authorId" readonly/>
+                    <input type="text" value="${author.authorName}" name="authorName"/>
+                    <input type="text" value="${author.dateAdded}" name="dateAdded" readonly/>
                 </tr>
                 
                 <tr>

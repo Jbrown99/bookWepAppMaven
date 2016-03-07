@@ -15,16 +15,16 @@
         <title>Add an Author</title>
     </head>
     <body>
-        <form method="POST" aciton="AuthorController">
+        <form method="POST" action="AuthorController?action=addEditDelete">
             
             <table>
                 
                 <tr>
-                    Name:<input type="text" name="name" value="${author.authorName}"/>
+                    Name:<input type="text" name="authorName" value="${author.authorName}"/>
                 </tr>
                 
                 <tr>
-                    <input type="submit" value="Save" name="action"/>
+                    <input type="submit" value="save" name="submit"/>
                 </tr>
                 
             </table>

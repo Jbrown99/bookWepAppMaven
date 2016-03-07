@@ -35,12 +35,16 @@ public class AuthorService implements Serializable {
         return dao.deleteAuthorById(id);
     }
     
-    public int updateAuthorById(String id,List<String> colNames,List<Object> colValues) throws ClassNotFoundException,SQLException{
-        return dao.updateAuthorById(id,colNames,colValues);
+    public int updateAuthorById(String id,String authorName) throws ClassNotFoundException,SQLException{
+        return dao.updateAuthorById(id,authorName);
     }
     
     public int insertIntoAuthorList(String value) throws ClassNotFoundException,SQLException{
         return dao.insertIntoAuthorList(value);
+    }
+    
+    public Author findAuthorById(Object id)throws ClassNotFoundException,SQLException{
+        return dao.findAuthorById(id);
     }
     
     

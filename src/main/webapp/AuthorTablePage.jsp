@@ -25,19 +25,15 @@
             
             <div class="col-sm-8">
                 
-        <form method="POST" action="AuthorController?action">   
+        <form method="POST" action="AuthorController?action=addEditDelete">   
                 
                 <table  class="table table-hover">
-            <th>Update/Delete</th>
+            
             <th>Author Name</th>
             <th>Date Added</th>
-                <c:forEach items="${authorList}" var="author">
+                <c:forEach items="${authors}" var="author">
                 <tr>
-                    <td><select name="delete/update">
-                            <option value="">...</option>
-                            <option value="${author.authorId}">Delete</option>
-                            <option value="${author.authorId}">Update</option>
-                        </select>   
+                    <td><input type="checkbox" name="authorId" value="${author.authorId}"/></td>  
                     <td>${author.authorName}</td>
                     <td>${author.dateAdded}</td>
                 </tr>
@@ -48,8 +44,9 @@
            
                 
               
-              <input type="submit" value="Add" name="submit" class="btn btn-info" />
-              <input type="submit" value="submit" name="submit" class="btn btn-default"/> 
+             <input type="submit" value="Add"  name="submit" class="btn btn-info" />
+             <input type="submit" value="Edit" name="submit" class="btn btn-warning"/> 
+             <input type="submit" value="Delete" name="submit" class="btn btn-danger"/> 
         </form>   
             </div>
         
