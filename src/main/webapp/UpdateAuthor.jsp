@@ -21,7 +21,9 @@
             <Table>
                 
                 <tr>
-                    
+                   <input type="text" value="${author.authorId}" name="authorId" readonly="readonly"/>
+                    <input type="text" value="${author.authorName}" name="authorName"/>
+                    <input type="text" value="${author.dateAdded}" name="dateAdded" readonly="readonly"/> 
                    
                    
                 </tr>
@@ -36,7 +38,7 @@
         </form>
         
         
-                    <jsp:include page="Footer.jsp" />
+                   
     </body>
      
 </html>

@@ -5,9 +5,8 @@
  */
 package edu.wctc.jcb.bookwebapp.controller;
 
+import edu.wctc.jcb.bookwebapp.ejb.AuthorFacade;
 import edu.wctc.jcb.bookwebapp.model.Author;
-import edu.wctc.jcb.bookwebapp.model.AuthorService;
-import edu.wctc.jcb.bookwebapp.model.MockAuthorDao;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -57,14 +56,10 @@ public class AuthorController extends HttpServlet {
      * @throws IOException if an I/O error occurs
      *
      */
-    private String driverClass;
-    private String url;
-    private String userName;
-    private String pwd;
-    private String dbJndiName;
+   
     
     @Inject
-    private AuthorService authService;
+    private AuthorFacade authService;
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -76,11 +71,11 @@ public class AuthorController extends HttpServlet {
         String action = request.getParameter(ACTION_PARAM);
         
         try  {
-            configDbConnection();
+            
             
             switch (action) {
                 case LIST:
-                     List<Author> authors = authService.getAuthorList();
+                     List<Author> authors = authService.findAll();
                      request.setAttribute("authors", authors);
                      destination= AUTHOR_LIST;
                      break;
@@ -90,7 +85,7 @@ public class AuthorController extends HttpServlet {
                     
                     if(specificAction.equals(EDIT)){
                             String authorId=request.getParameter("authorId");
-                            Author author = authService.findAuthorById(authorId);
+                            Author author = authService.find(new Integer(authorId));
                             request.setAttribute("author", author);
                             destination= UPDATE_AUTHOR;
                     }
@@ -140,25 +135,12 @@ public class AuthorController extends HttpServlet {
             
         }
     
-     private void refreshList(HttpServletRequest request, AuthorService authService) throws Exception {
-        List<Author> authors = authService.getAuthorList();
+     private void refreshList(HttpServletRequest request, AuthorFacade authService) throws Exception {
+        List<Author> authors = authService.findAll();
         request.setAttribute("authors", authors);
     }
     
-    private void configDbConnection() throws NamingException, SQLException{
-        
-        if(dbJndiName == null) {
-            authService.getDao().initDao(driverClass, url, userName, pwd);   
-        } else {
-            /*
-             Lookup the JNDI name of the Glassfish connection pool
-             and then use it to create a DataSource object.
-             */
-            Context ctx = new InitialContext();
-            DataSource ds = (DataSource) ctx.lookup(dbJndiName);
-            authService.getDao().initDao(ds);
-        }   
-    }
+   
     
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -200,13 +182,6 @@ public class AuthorController extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-    @Override
-    public void init() throws ServletException{
-        //driverClass = getServletContext().getInitParameter("db.driver.class");
-        //url = getServletContext().getInitParameter("db.url");
-        //userName = getServletContext().getInitParameter("db.username");
-        //pwd = getServletContext().getInitParameter("db.password");
-        dbJndiName = getServletContext().getInitParameter("db.jndi.name");
-    }
+   
     
 }
