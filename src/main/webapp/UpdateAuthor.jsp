@@ -16,31 +16,27 @@
     </head>
     <body>
         
-        <form method="POST" action="AuthorController">
+        <form method="POST" name="fishInformation" action="AuthorController">
             
             <Table>
                 
                 <tr>
-                    <input type="text" value="${author.authorId}" name="authorId" readonly/>
-                    <input type="text" value="${author.authorName}" name="authorName"/>
-                    <input type="text" value="${author.dateAdded}" name="dateAdded" readonly/>
+                    
+                   
+                   
                 </tr>
                 
                 <tr>
                     <input type="submit" value="Save" name="action"/>
                 </tr>
-                
-                
-                
+                     
             </Table>
-            
-            
-            
-            
+           
             
         </form>
         
         
-        
+                    <jsp:include page="Footer.jsp" />
     </body>
+     
 </html>

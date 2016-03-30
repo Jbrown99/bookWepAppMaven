@@ -36,8 +36,12 @@ public class NameController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         HttpSession session = request.getSession();
         ServletContext ctx = request.getServletContext();
-        
+      
+           
+       
         String action = request.getParameter("action");
+        
+        
         
         
         if(action.equals("submit")){

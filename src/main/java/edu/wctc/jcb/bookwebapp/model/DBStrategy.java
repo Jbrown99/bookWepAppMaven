@@ -8,6 +8,7 @@ package edu.wctc.jcb.bookwebapp.model;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import javax.sql.DataSource;
 /**
  * 
  * The general contract for all JDBC database access strategy implementations.
@@ -16,6 +17,8 @@ import java.util.Map;
  * @author joshuabrown
  */
 public interface DBStrategy {
+    
+     void openConnection(DataSource ds) throws SQLException;
     
     public abstract void openConnection(String driverClass, String url, 
             String userName, String password) 

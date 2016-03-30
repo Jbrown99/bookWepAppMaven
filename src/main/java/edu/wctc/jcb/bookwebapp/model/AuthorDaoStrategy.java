@@ -1,12 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package edu.wctc.jcb.bookwebapp.model;
 
 import java.sql.SQLException;
 import java.util.List;
+import javax.sql.DataSource;
 
 /**
  *
@@ -21,6 +18,7 @@ public interface AuthorDaoStrategy {
     public Author findAuthorById(Object id)throws ClassNotFoundException,SQLException;
     
     public void initDao(String driver,String url,String user,String pwd);
+    public void initDao(DataSource ds) throws SQLException;
     public DBStrategy getDb();
     public void setDb(DBStrategy db);
     public String getDriver();
@@ -30,6 +28,8 @@ public interface AuthorDaoStrategy {
     public String getUser();
     public void setUser(String user);
     public String getPwd();
-     public void setPwd(String pwd);
+    public void setPwd(String pwd);
+    public DataSource getDs();
+    public void setDs(DataSource ds);
     
 }

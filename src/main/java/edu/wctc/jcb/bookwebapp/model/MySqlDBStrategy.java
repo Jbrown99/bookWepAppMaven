@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.enterprise.context.Dependent;
+import javax.sql.DataSource;
 
 /**
  *
@@ -34,6 +35,15 @@ public class MySqlDBStrategy implements DBStrategy, Serializable {
     }
     
     @Override
+    public final void openConnection(DataSource ds) throws SQLException {
+        try {
+            conn = ds.getConnection();
+        } catch (SQLException ex) {
+            throw new SQLException(ex.getMessage(),ex.getCause());
+        }
+    }
+    
+    @Override
     public void openConnection(String driverClass, String url, 
             String userName, String password) throws ClassNotFoundException, SQLException {
         
@@ -41,6 +51,8 @@ public class MySqlDBStrategy implements DBStrategy, Serializable {
         conn = DriverManager.getConnection(url,userName, password);
         
     }
+    
+    
     
     public  void closeConnection() throws SQLException {
         conn.close();
