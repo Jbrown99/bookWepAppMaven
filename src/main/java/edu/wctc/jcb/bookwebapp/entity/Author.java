@@ -1,5 +1,5 @@
 
-package edu.wctc.jcb.bookwebapp.model;
+package edu.wctc.jcb.bookwebapp.entity;
 
 import java.io.Serializable;
 import java.util.Collection;

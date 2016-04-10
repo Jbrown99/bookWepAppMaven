@@ -5,20 +5,24 @@
  */
 package edu.wctc.jcb.bookwebapp.controller;
 
-import edu.wctc.jcb.bookwebapp.ejb.AbstractFacade;
-import edu.wctc.jcb.bookwebapp.ejb.AuthorFacade;
-import edu.wctc.jcb.bookwebapp.model.Author;
-import edu.wctc.jcb.bookwebapp.model.Book;
+
+import edu.wctc.jcb.bookwebapp.Service.AuthorService;
+import edu.wctc.jcb.bookwebapp.Service.BookService;
+import edu.wctc.jcb.bookwebapp.entity.Author;
+import edu.wctc.jcb.bookwebapp.entity.Book;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
 
 /**
  *
@@ -39,10 +43,8 @@ public class BookController extends HttpServlet {
     private static final String EDIT = "Edit";
     private static final String ACTION_PARAM="action";
     
-    @Inject
-    private AbstractFacade<Book> bookService;
-      @Inject
-    private AuthorFacade authService;
+    private BookService bookService;
+    private AuthorService authService;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -148,11 +150,11 @@ public class BookController extends HttpServlet {
             
         }
     
-     private void refreshAuthorList(HttpServletRequest request, AuthorFacade authService) throws Exception {
+     private void refreshAuthorList(HttpServletRequest request, AuthorService authService) throws Exception {
         List<Author> authors = authService.findAll();
         request.setAttribute("authors", authors);
     }
-       private void refreshBookList(HttpServletRequest request, AbstractFacade<Book> bookService) throws Exception {
+       private void refreshBookList(HttpServletRequest request, BookService bookService) throws Exception {
         List<Book> books = bookService.findAll();
         request.setAttribute("books", books);
     }
@@ -189,6 +191,15 @@ public class BookController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
+    }
+    
+    public void init() throws ServletException {
+        // Ask Spring for object to inject
+        ServletContext sctx = getServletContext();
+        WebApplicationContext ctx
+                = WebApplicationContextUtils.getWebApplicationContext(sctx);
+        authService = (AuthorService) ctx.getBean("authorService");
+        bookService = (BookService) ctx.getBean("bookService");
     }
 
     /**
