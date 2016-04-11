@@ -5,12 +5,14 @@
  */
 package edu.wctc.jcb.bookwebapp.controller;
 
+import edu.wctc.jcb.bookwebapp.ejb.AbstractFacade;
 import edu.wctc.jcb.bookwebapp.ejb.AuthorFacade;
 import edu.wctc.jcb.bookwebapp.model.Author;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.inject.Inject;
 import javax.naming.Context;
@@ -59,7 +61,7 @@ public class AuthorController extends HttpServlet {
    
     
     @Inject
-    private AuthorFacade authService;
+    private AbstractFacade<Author> authService;
     
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -69,6 +71,7 @@ public class AuthorController extends HttpServlet {
         
         String destination="";
         String action = request.getParameter(ACTION_PARAM);
+        Author author = null;
         
         try  {
             
@@ -85,14 +88,15 @@ public class AuthorController extends HttpServlet {
                     
                     if(specificAction.equals(EDIT)){
                             String authorId=request.getParameter("authorId");
-                            Author author = authService.find(new Integer(authorId));
+                             author = authService.find(new Integer(authorId));
                             request.setAttribute("author", author);
                             destination= UPDATE_AUTHOR;
                     }
                     if(specificAction.equals(DELETE)){
                         String[] authorIds = request.getParameterValues("authorId");
                         for (String id : authorIds) {
-                            authService.deleteAuthorById(id);
+                            author = authService.find(new Integer(id));
+                            authService.remove(author);
                         }
                         this.refreshList(request, authService);
                         destination= AUTHOR_LIST;
@@ -105,7 +109,10 @@ public class AuthorController extends HttpServlet {
                     if(specificAction.equals(SAVE)){
                         
                     String authorName = request.getParameter("authorName");
-                    authService.insertIntoAuthorList(authorName);
+                        author = new Author();
+                        author.setAuthorName(authorName);
+                        author.setDateAdded(new Date());
+                        authService.edit(author);
                     this.refreshList(request, authService);
                     destination= AUTHOR_LIST;  
                     }
@@ -114,7 +121,9 @@ public class AuthorController extends HttpServlet {
                 case SAVE_EDIT:
                     String authorName = request.getParameter("authorName");
                     String authorId = request.getParameter("authorId");
-                    authService.updateAuthorById(authorId, authorName);
+                        author = authService.find(new Integer(authorId));
+                        author.setAuthorName(authorName);
+                        authService.edit(author);
                     this.refreshList(request, authService);
                     destination= AUTHOR_LIST;
                     break;
@@ -135,7 +144,7 @@ public class AuthorController extends HttpServlet {
             
         }
     
-     private void refreshList(HttpServletRequest request, AuthorFacade authService) throws Exception {
+     private void refreshList(HttpServletRequest request, AbstractFacade<Author> authService) throws Exception {
         List<Author> authors = authService.findAll();
         request.setAttribute("authors", authors);
     }

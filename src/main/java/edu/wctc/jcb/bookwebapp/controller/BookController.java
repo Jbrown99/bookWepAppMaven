@@ -42,7 +42,7 @@ public class BookController extends HttpServlet {
     @Inject
     private AbstractFacade<Book> bookService;
       @Inject
-    private AuthorFacade authService;
+    private AbstractFacade<Author> authService;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -97,7 +97,7 @@ public class BookController extends HttpServlet {
                     String title = request.getParameter("title");
                     String isbn = request.getParameter("isbn");
                     String authorId = request.getParameter("authorId");
-                    String bookId = request.getParameter("bookId");
+                    
                     book = new Book(0);
                         book.setTitle(title);
                         book.setIsbn(isbn);
@@ -148,7 +148,7 @@ public class BookController extends HttpServlet {
             
         }
     
-     private void refreshAuthorList(HttpServletRequest request, AuthorFacade authService) throws Exception {
+     private void refreshAuthorList(HttpServletRequest request, AbstractFacade<Author> authService) throws Exception {
         List<Author> authors = authService.findAll();
         request.setAttribute("authors", authors);
     }
