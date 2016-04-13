@@ -20,6 +20,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -76,14 +77,15 @@ public class BookController extends HttpServlet {
                     
                     
                     if(specificAction.equals(EDIT)){
-                            String bookId=request.getParameter("book");
-                             book = bookService.find(new Integer(bookId));
+                            String bookId=request.getParameter("bookId");
+                            book = bookService.findById(bookId);
                             request.setAttribute("book", book);
                             destination= UPDATE_BOOK;
                     }
                     if(specificAction.equals(DELETE)){
                         String[] bookIds = request.getParameterValues("bookId");
                         for (String id : bookIds) {
+                            book = bookService.findById(id);
                             bookService.remove(book);
                         }
                         this.refreshAuthorList(request, authService);
@@ -105,12 +107,13 @@ public class BookController extends HttpServlet {
                         book.setIsbn(isbn);
                         Author author = null;
                         if(authorId != null) {
-                            author = authService.find(new Integer(authorId));
+                            author = authService.findById(authorId);
                             book.setAuthorId(author);
                         }
                     bookService.edit(book);
                     this.refreshBookList(request, bookService);
                     this.refreshAuthorList(request, authService);
+                    destination = BOOK_LIST;
                      
                     }
                     break;
@@ -120,12 +123,12 @@ public class BookController extends HttpServlet {
                     String isbn = request.getParameter("isbn");
                     String authorId = request.getParameter("authorId");
                     String bookId = request.getParameter("bookId");
-                     book = bookService.find(new Integer(bookId));
+                     book = bookService.findById(bookId);
                         book.setTitle(title);
                         book.setIsbn(isbn);
                         Author author = null;
                         if(authorId != null) {
-                            author = authService.find(new Integer(authorId));
+                            author = authService.findById(authorId);
                             book.setAuthorId(author);
                         }
                     bookService.edit(book);

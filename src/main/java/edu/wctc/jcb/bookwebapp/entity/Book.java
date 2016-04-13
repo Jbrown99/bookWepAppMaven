@@ -5,7 +5,6 @@
  */
 package edu.wctc.jcb.bookwebapp.entity;
 
-import edu.wctc.jcb.bookwebapp.entity.Author;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;

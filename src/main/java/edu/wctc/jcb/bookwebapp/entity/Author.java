@@ -84,6 +84,14 @@ public class Author implements Serializable {
     public void setDateAdded(Date dateAdded) {
         this.dateAdded = dateAdded;
     }
+    @XmlTransient
+    public Set<Book> getBookSet() {
+        return bookSet;
+    }
+
+    public void setBookSet(Set<Book> bookSet) {
+        this.bookSet = bookSet;
+    }
 
     @Override
     public int hashCode() {

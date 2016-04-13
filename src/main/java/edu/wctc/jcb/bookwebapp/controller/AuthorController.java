@@ -92,14 +92,15 @@ public class AuthorController extends HttpServlet {
                     
                     if(specificAction.equals(EDIT)){
                             String authorId=request.getParameter("authorId");
-                             author = authService.find(new Integer(authorId));
+                             author = authService.findById(authorId);
                             request.setAttribute("author", author);
                             destination= UPDATE_AUTHOR;
                     }
                     if(specificAction.equals(DELETE)){
                         String[] authorIds = request.getParameterValues("authorId");
                         for (String id : authorIds) {
-                            authService.remove(id);
+                            author = authService.findById(id);
+                            authService.remove(author);
                         }
                         this.refreshList(request, authService);
                         destination= AUTHOR_LIST;
@@ -129,7 +130,7 @@ public class AuthorController extends HttpServlet {
                             author = authService.findById(authorId);
                             author.setBookSet(new LinkedHashSet<>());
                         }
-                    authService.updateAuthorById(authorId, authorName);
+                    authService.edit(author);
                     this.refreshList(request, authService);
                     destination= AUTHOR_LIST;
                     break;

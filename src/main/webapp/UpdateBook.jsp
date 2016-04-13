@@ -31,13 +31,13 @@
                 <tr>
                     
                     Author:<select id="authorDropDown" name="authorId">
-                    <c:choose>
+                    
                             <option value="">None</option>
                             <c:forEach var="author" items="${authors}">                                       
-                                <option value="${author.authorId}" <c:if test="${book.authorId.authorId == author.authorId}">selected</c:if>>${author.authorName}</option>
+                                <option value="${author.authorId}" <c:if test="${book.authorId == author.authorId}">selected</c:if>>${author.authorName}</option>
                             </c:forEach>
                        
-                    </c:choose>
+                    
                     </select>
                 </td>
                 </tr>
